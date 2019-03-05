@@ -1,0 +1,247 @@
+explored=set()#the explored position or dot
+  fringes=util.Queue()# store the latest pushed route
+  action_=util.Queue()
+  parent={}#key is the child node and value is the parent value
+  init_state=problem.getSuccessors(problem.getStartState())
+  start_pos=problem.getStartState()
+  print("the start point is: ",start_pos)
+  if(problem.isGoalState(start_pos)):
+      return start_pos
+  else:
+      explored.add(start_pos)#have explored the dot
+  for i in range(0,len(init_state)):
+      parent[init_state[i][0]]=start_pos
+      route=[start_pos,init_state[i][0]]
+      fringes.push(route)#add the route to the fringes
+      action_init=[init_state[i][1]]
+      action_.push(action_init)
+  flag=False
+  while(not fringes.isEmpty()):
+      route=fringes.pop()
+      print("current_fringes: ",route)
+      action_direction=action_.pop()
+      #print(type(action_direction))
+      next_to_expand=route[len(route)-1]
+      print("next to expand is: ",next_to_expand)
+      if(problem.isGoalState(next_to_expand)):
+          flag=True
+          print("we found the route")
+          print(route)
+          #print(type(route))
+          return action_direction
+      elif(next_to_expand not in explored):
+          explored.add(next_to_expand)
+          curr_child=problem.getSuccessors(next_to_expand)
+          print("the next succssor to expand is:",next_to_expand)
+          #print(type(problem.getSuccessors(next_to_expand)))
+          if(len(curr_child)!=0):#the node does have the child node to expand
+              print("this time the number of child is: ",len(curr_child))
+              for i in range(0,len(curr_child)):
+                  print("before added, the route: ",route)
+                  if(curr_child[i][0] not in explored):
+                      print("the current node's child is ",curr_child[i][0])
+                      print("the current direction is: ",curr_child[i][1])
+                      #parent[curr_child[i][0]]=next_to_expand
+                      route_=route.copy()
+                      route_.append(curr_child[i][0])
+                      action_cp=action_direction.copy()
+                      action_cp.append(curr_child[i][1])
+                      print("the new route is: ",route_)
+                      print("the new direction is: ",action_cp)
+                      fringes.push(route_)
+                      action_.push(action_cp)
+                  else:
+                      print("the child node has already been explored!")
+                      if(len(fringes!=0)):
+                          print("there is routes!")
+          else:#the next_to_expand_node doesn't have a child node, and meanwhile it is not the goal then just go to the next route to explored
+              continue
+      else:
+          print("oops we seems to reach the point that previously explored ")
+          print(next_to_expand)
+          continue
+
+
+          max_x=corners[0][0]
+            max_y=corners[0][1]
+            min_x=corners[0][0]
+            min_y=corners[0][1]
+            for i in range(0,4):
+                if(corners[i][0]>max_x):
+                    max_x=corners[i][0]
+                if(corners[i][1]>max_y):
+                    max_y=corners[i][1]
+                if(corners[i][0]<min_x):
+                    min_x=corners[i][0]
+                if(corners[i][1]<min_y):
+                    min_y=corners[i][1]
+            #get the next state possible dot
+            if(curr_dot[0]+1<=max_x):
+                next_dot_r=(curr_dot[0]+1,curr_dot[1])
+            else:
+                next_dot_r=(-1,-1)
+            if(curr_dot[0]-1>=min_x):
+                next_dot_l=(curr_dot[0]-1,curr_dot[1])
+            else:
+                next_dot_l=(-1,-1)
+            if(curr_dot[1]+1<=max_y):
+                next_dot_u=(curr_dot[0],curr_dot[1]+1)
+            else:
+                next_dot_u=(-1,-1)
+            if(curr_dot[1]-1>=min_y):
+                next_dot_d=(curr_dot[0],curr_dot[1]-1)
+            else:
+                next_dot_d=(-1,-1)
+            dot_set=[curr_dot,next_dot_l,next_dot_d,next_dot_r,next_dot_u]
+            #gain the current dot's hx
+            for dot_now in dot_set:
+                cnt_wall=0
+                if(dot_now[0]>min_dot[0]):
+                    for i in range(0,abs(dot_now[0]-min_dot[0])):
+                        new_dot_x=dot_now[0]-1
+                        new_dot_y=dot_now[1]
+                        if(walls[new_dot_x][new_dot_y]):
+                            cnt_wall+=1
+                elif(dot_now[0]<=min_dot[0]):
+                #move RIGHT
+                    for i in range(0,abs(dot_now[0]-min_dot[0])):
+                        new_dot_x=dot_now[0]+1
+                        new_dot_y=dot_now[1]
+                        if(walls[new_dot_x][new_dot_y]):
+                            cnt_wall+=1
+                if(dot_now[1]>min_dot[1]):
+                #move down
+                    for i in range(0,abs(dot_now[1]-min_dot[1])):
+                        new_dot_x=dot_now[0]
+                        new_dot_y=dot_now[1]-1
+                        if(walls[new_dot_x][new_dot_y]):
+                            cnt_wall+=1
+                elif(dot_now[1]<=min_dot[1]):
+                #move up
+                    for i in range(0,abs(dot_now[1]-min_dot[1])):
+                        new_dot_x=dot_now[0]
+                        new_dot_y=dot_now[1]+1
+                        if(walls[new_dot_x][new_dot_y]):
+                            cnt_wall+=1
+                wall_all.append(cnt_wall)
+                #print("the number of wall along the mindot is: ",cnt_wall)
+            min_wall_cnt=wall_all[1]
+            max_wall_cnt=wall_all[0]
+            for i in range(0,len(wall_all)):
+                if(min_wall_cnt>wall_all[i]):
+                    min_wall_cnt=wall_all[i]
+                if(max_wall_cnt<wall_all[i]):
+                    max_wall_cnt=wall_all[i]
+            print("the min wall is: ",wall_all[0],",",wall_all[1],",",wall_all[2],",",wall_all[3],"min: ",min_wall_cnt)
+
+            dot_right=(position[0]+1,position[1])
+              dot_left=(position[0]-1,position[1])
+              dot_up=(position[0],position[1]+1)
+              dot_down=(position[0],position[1]-1)
+              dot_list=[position,dot_right,dot_left,dot_up,dot_down]
+              food_sum_list=[]
+              cnt=0
+              food=foodGrid.asList()
+              #problem.heuristicInfo['wallCount']=problem.walls.count()
+              #print(problem.heuristicInfo['wallCount']," is the all walls")
+          #    print("this is food",food)
+          #    print(len(food))
+              visited_food=[]
+              count_true=0
+              for i in range(0,len(food)):
+                  visited_food.append(False)
+              for dot_now in dot_list:
+                  min_dis=[]
+                  dis_sum=0
+                  food_sum=0
+                  min_index=0
+                  if(len(food)!=0):
+                      #print("food num!=0")
+                      min_mah=abs(dot_now[0]-food[0][0])+abs(dot_now[1]-food[0][1])
+                      curr_dot=food[0]
+                      for i in range(0,len(food)):
+                          dis=abs(dot_now[0]-food[i][0])+abs(dot_now[1]-food[i][1])
+                          if(dis<min_mah):
+                              min_mah=dis
+                              min_index=i
+                      min_dis.append(min_mah)
+              if(len(min_dis)!=0):
+                  min_dot=min_dis[0]
+                  position_min=dot_list[0]
+              for i in range(0,len(min_dis)):
+                  if(min_dot>min_dis[i]):
+                      min_dot=min_dis[i]
+                      position_min=dot_list[i]
+              if(len(food)!=0):
+                  #print("out range: ",min_index)
+                  food_sum=abs(position_min[0]-food[min_index][0])+abs(position_min[1]-food[min_index][1])
+                  visited_food[min_index]=True
+                  count_true+=1
+                  curr_dot=food[min_index]
+              if(len(food)!=0 and min_index!=0):
+                  #print("range: ",min_index)
+                  min_distance=abs(food[min_index][0]-food[0][0])+abs(food[min_index][1]-food[0][1])
+              elif((len(food)!=0) and (min_index==0)):
+                  #print("range:: ",len(food))
+                  min_distance=abs(food[min_index][0]-food[len(food)-1][0])+abs(food[min_index][1]-food[len(food)-1][1])
+              while(count_true!=len(food)):
+                  min_dot_index=-1
+                  for i in range(0,len(food)):
+                      if(visited_food[i]!=True):
+                          distance_curr=abs(food[i][0]-curr_dot[0])+abs(food[i][1]-curr_dot[1])
+                          #print("min_index: ",min_index)
+                          if(distance_curr<min_distance):
+                              min_distance=distance_curr
+                              min_dot_index=i
+                  food_sum+=min_distance
+                  visited_food[min_dot_index]=True
+                  curr_dot=food[min_dot_index]
+                  count_true+=1
+                  if(min_dot_index!=0):
+                      min_distance=abs(food[min_index][0]-food[0][0])+abs(food[min_index][1]-food[0][1])
+                  elif(min_dot_index==0):
+                      min_distance=abs(food[min_dot_index][0]-food[1][0])+abs(food[min_dot_index][1]-food[1][1])
+
+              return food_sum-len(food)
+
+              food=foodGrid.asList()
+                ur_dis=[]
+                for i in range(0,len(food)):
+                    ur_dis.append(round(math.sqrt(pow(position[0]-food[i][0],2)+pow(position[1],food[i][1],2))))
+                if(len(ur_dis)!=0):
+                    print(ur_dis)
+                    max_ur=ur_dis[0]
+                    for i in range(0,len(food)):
+                        if(max_ur<ur_dis[i]):
+                            max_ur=ur_dis[i]
+                else:
+                    max_ur=0
+                return max(len(food),max_ur)
+
+
+                food=foodGrid.asList()
+                if(len(food)!=0):
+                    min_x=food[0][0]#the minimal coordinate
+                    max_x=food[0][0]
+                    min_y=food[0][1]
+                    max_y=food[0][1]
+                for i in range(0,len(food)):
+                    if(food[i][0]<min_x):
+                        min_x=food[i][0]
+                    if(food[i][0]>max_x):
+                        max_x=food[i][0]
+                    if(food[i][1]<min_y):
+                        min_y=food[i][1]
+                    if(food[i][1]>max_y):
+                        max_y=food[i][1]
+                distance=0
+                curr_dis=0
+                if(len(food)!=0):
+                    dot_1=(min_x,min_y)
+                    dot_2=(max_x,max_y)
+                    #min_edg=(abs(max_x-min_x),abs(max_y-min_y))
+                    distance=abs(dot_1[0]-dot_2[0])+abs(dot_1[1]-dot_2[1])
+                    curr_dis1=abs(position[0]-dot_1[0])+abs(position[1]-dot_1[1])
+                    curr_dis2=abs(position[0]-dot_2[0])+abs(position[1]-dot_2[1])
+                    curr_dis=min(curr_dis1,curr_dis2)
+                return distance+curr_dis
